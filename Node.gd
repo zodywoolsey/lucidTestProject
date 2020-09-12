@@ -42,7 +42,10 @@ func _host():
 	get_tree().network_peer = server
 	get_tree().connect("network_peer_connected", self, "_client_connected")
 	get_tree().connect("network_peer_disconnected", self, "_client_disconnected")
-	hostlabel.text = "IP: "+IP.get_local_addresses()[1]
+	for i in IP.get_local_interfaces():
+		hostlabel.text += i.name+":\n"
+		for a in i.addresses:
+			hostlabel.text += "	"+a+"\n"
 	thisid = get_tree().get_network_unique_id()
 
 func _client_connected(id):

@@ -1,0 +1,94 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Node.gd" type="Script" id=1]
+[ext_resource path="res://player.tscn" type="PackedScene" id=2]
+
+[sub_resource type="CubeMesh" id=1]
+size = Vector3( 500, 0.01, 500 )
+
+[sub_resource type="OpenSimplexNoise" id=2]
+octaves = 1
+period = 0.1
+
+[sub_resource type="NoiseTexture" id=3]
+flags = 2
+width = 1024
+height = 1024
+noise = SubResource( 2 )
+
+[sub_resource type="SpatialMaterial" id=4]
+flags_unshaded = true
+albedo_color = Color( 0.203922, 0.192157, 0, 1 )
+albedo_texture = SubResource( 3 )
+
+[sub_resource type="ConvexPolygonShape" id=5]
+points = PoolVector3Array( -250, 0.005, 250, 250, 0.005, -250, 250, 0.005, 250, -250, 0.005, -250, -250, -0.005, 250, 250, -0.005, -250, 250, -0.005, 250, -250, -0.005, -250, 250, 0.005, 250, -250, 0.005, -250, 250, 0.005, -250, -250, 0.005, 250, 250, -0.005, 250, -250, -0.005, -250, 250, -0.005, -250, -250, -0.005, 250, 250, 0.005, 250, -250, -0.005, 250, -250, 0.005, 250, 250, -0.005, 250, 250, 0.005, -250, -250, -0.005, -250, -250, 0.005, -250, 250, -0.005, -250 )
+
+[node name="Node" type="Node"]
+script = ExtResource( 1 )
+
+[node name="Spatial" type="Spatial" parent="."]
+
+[node name="player" parent="Spatial" instance=ExtResource( 2 )]
+
+[node name="RigidBody" type="RigidBody" parent="Spatial"]
+mode = 1
+continuous_cd = true
+contact_monitor = true
+can_sleep = false
+
+[node name="MeshInstance" type="MeshInstance" parent="Spatial/RigidBody"]
+mesh = SubResource( 1 )
+material/0 = SubResource( 4 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Spatial/RigidBody"]
+shape = SubResource( 5 )
+
+[node name="gui" type="Node2D" parent="."]
+
+[node name="host" type="Button" parent="gui"]
+margin_left = 48.0
+margin_right = 206.0
+margin_bottom = 20.0
+text = "start host"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="connect" type="Button" parent="gui"]
+margin_left = 289.0
+margin_right = 435.0
+margin_bottom = 20.0
+text = "connect"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="hostip" type="Label" parent="gui"]
+margin_left = 48.0
+margin_top = 20.0
+margin_right = 206.0
+margin_bottom = 55.0
+text = "IP:"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="inip" type="TextEdit" parent="gui"]
+margin_left = 289.0
+margin_top = 20.0
+margin_right = 435.0
+margin_bottom = 60.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="force_sync_players" type="Button" parent="gui"]
+margin_left = 48.0
+margin_top = 60.0
+margin_right = 206.0
+margin_bottom = 96.0
+text = "force_sync_players"
+__meta__ = {
+"_edit_use_anchors_": false
+}

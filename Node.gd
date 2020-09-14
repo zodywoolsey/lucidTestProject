@@ -96,9 +96,11 @@ remote func _check_player_offset(pos, id):
 
 remote func _sync_client_positions(pos,id):
 	if id != 0:
-		get_tree().get_root().get_node("Node/Spatial").get_node(str(id)).get_node("KinematicBody").transform.origin = pos
+		# get_tree().get_root().get_node("Node/Spatial").get_node(str(id)).get_node("KinematicBody").transform.origin = pos
+		get_tree().get_root().get_node("Node/Spatial").get_node(str(id)).tween_move_to(pos)
 	else:
-		get_tree().get_root().get_node("Node/Spatial/player").get_node("KinematicBody").transform.origin = pos
+		# get_tree().get_root().get_node("Node/Spatial/player").get_node("KinematicBody").transform.origin = pos
+		get_tree().get_root().get_node("Node/Spatial/player").tween_move_to(pos)
 
 func _force_sync_players():
 	if hosting:

@@ -10,6 +10,7 @@ var speed = 4
 var maxspeed = 30
 
 onready var body = get_node("KinematicBody")
+onready var tween = get_node("Tween")
 
 var velocity = Vector3(0,0,0)
 
@@ -78,3 +79,6 @@ func _unhandled_key_input(event):
 		left = false
 	if event.is_action_released("ui_down"):
 		down = false
+
+func tween_move_to(pos):
+	tween.interpolate_property(body,"transform:origin",body.transform.origin,pos,0.05,Tween.TRANS_LINEAR)

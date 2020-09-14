@@ -10,6 +10,7 @@ var speed = 1
 var maxspeed = 20
 
 onready var body = get_node("KinematicBody")
+onready var tween = get_node("Tween")
 
 var velocity = Vector3(0,0,0)
 
@@ -24,3 +25,6 @@ func _process(delta):
 	# velocity.x = velocity.x*damp
 	# body.linear_velocity.x = body.linear_velocity.x*damp
 
+
+func tween_move_to(pos):
+	tween.interpolate_property(body,"transform:origin",body.transform.origin,pos,0.05,Tween.TRANS_LINEAR)

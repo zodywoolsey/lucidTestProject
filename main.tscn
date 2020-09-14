@@ -47,9 +47,8 @@ shape = SubResource( 5 )
 [node name="gui" type="Node2D" parent="."]
 
 [node name="host" type="Button" parent="gui"]
-margin_left = 48.0
 margin_top = 1.0
-margin_right = 206.0
+margin_right = 158.0
 margin_bottom = 36.0
 text = "start host"
 __meta__ = {
@@ -75,8 +74,8 @@ __meta__ = {
 }
 
 [node name="force_sync_players" type="Button" parent="gui"]
-margin_left = 253.0
-margin_right = 411.0
+margin_left = 205.0
+margin_right = 363.0
 margin_bottom = 36.0
 text = "force_sync_players"
 __meta__ = {
@@ -84,9 +83,8 @@ __meta__ = {
 }
 
 [node name="hostip" type="TextEdit" parent="gui"]
-margin_left = 48.0
 margin_top = 36.0
-margin_right = 411.0
+margin_right = 363.0
 margin_bottom = 554.0
 readonly = true
 __meta__ = {

@@ -18,15 +18,21 @@ func _ready():
 	get_node("gui/connect").connect("pressed",self,"_connect")
 	get_node("gui/host").connect("pressed",self,"_host")
 	get_node("gui/force_sync_players").connect("pressed",self,"_force_sync_players")
+	get_node("Spatial/player").connect("move",self,"local_player_moved")
 
 func _process(delta):
-	if connected == true:
-		rpc("_update_client_position",get_node("Spatial/player").get_node("KinematicBody").linear_velocity,get_node("Spatial/player").get_node("KinematicBody").transform.origin, thisid)
+	# if connected == true:
+		# rpc("_check_player_offset",get_node("Spatial/player").get_node("KinematicBody").transform.origin, thisid)
+		# rpc("_move_player",get_node("Spatial/player").get_node("KinematicBody").linear_velocity,get_node("Spatial/player").get_node("KinematicBody").transform.origin, thisid)
 	if hosting == true:
 		# print(thisid)
 		for i in clients:
-			rpc_id(int(i.name),"_update_client_position",get_node("Spatial/player").get_node("KinematicBody").linear_velocity,get_node("Spatial/player").get_node("KinematicBody").transform.origin, thisid)
+			rpc_id(int(i.name),"_move_player",get_node("Spatial/player").get_node("KinematicBody").linear_velocity,get_node("Spatial/player").get_node("KinematicBody").transform.origin, thisid)
+			_force_sync_players()
+			rpc_id(int(i.name),"_check_player_offset",get_tree().get_root().get_node("Node/Spatial").get_node(str(i.name)).get_node("KinematicBody").transform.origin,int(i.name))
 
+func local_player_moved(velocity):
+	rpc("_move_player",velocity,get_node("Spatial/player").get_node("KinematicBody").transform.origin, thisid)
 
 func _connect():
 	var client = NetworkedMultiplayerENet.new()
@@ -74,16 +80,19 @@ func _connected_to_server():
 func _disconnected_from_server():
 	connected = false
 
-remote func _update_client_position(velocity,pos,id):
-	print("myid: "+str(thisid))
-	print("update: "+str(id))
+remote func _move_player(velocity,pos,id):
+	if connected:
+		var startorig = get_tree().get_root().get_node("Node/Spatial").get_node(str(id)).get_node("KinematicBody").transform.origin
+		get_tree().get_root().get_node("Node/Spatial").get_node(str(id)).get_node("KinematicBody").linear_velocity = velocity
+		# if abs( startorig.distance_to(pos) ) > .01 :
+		# 	get_tree().get_root().get_node("Node/Spatial").get_node(str(id)).get_node("KinematicBody").transform.origin = pos
+
+	# get_tree().get_root().get_node("Node/Spatial").get_node(str(id)).get_node("KinematicBody").transform.origin = pos
+
+remote func _check_player_offset(pos, id):
 	var startorig = get_tree().get_root().get_node("Node/Spatial").get_node(str(id)).get_node("KinematicBody").transform.origin
-	# if startorig.x > pos.x:
-	# 	print(startorig)
-	# 	print(pos)
-	get_tree().get_root().get_node("Node/Spatial").get_node(str(id)).get_node("KinematicBody").linear_velocity = velocity
-	# if abs(get_tree().get_root().get_node("Node/Spatial").get_node(str(id)).get_node("KinematicBody").transform.origin.x) - abs(pos.x) > .4 || abs(get_tree().get_root().get_node("Node/Spatial").get_node(str(id)).get_node("KinematicBody").transform.origin.z) - abs(pos.z) > .4 :
-	# 	get_tree().get_root().get_node("Node/Spatial").get_node(str(id)).get_node("KinematicBody").transform.origin = pos
+	if abs( startorig.distance_to(pos) ) > .05 :
+		get_tree().get_root().get_node("Node/Spatial").get_node(str(id)).get_node("KinematicBody").transform.origin = pos
 
 remote func _sync_client_positions(pos,id):
 	if id != 0:

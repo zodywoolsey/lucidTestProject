@@ -5,21 +5,26 @@ var down 	= false
 var left 	= false
 var right 	= false
 
-var damp = 1.1
+var damp = 0.1
 var speed = 4
-var maxspeed = 20
+var maxspeed = 30
 
 onready var body = get_node("KinematicBody")
 
 var velocity = Vector3(0,0,0)
 
-# Called when the node enters the scene tree for the first time.
+signal move(velocity_vector)
+
+
 func _ready():
 	pass # Replace with function body.
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	body.linear_damp = damp
+	# velocity = body.linear_velocity
+
 	if up == true && velocity.z > -maxspeed:
 		velocity += Vector3.FORWARD*speed
 	if right == true && velocity.x < maxspeed:
@@ -38,15 +43,19 @@ func _process(delta):
 	# 	velocity = velocity/damp
 	# 	body.linear_velocity = body.linear_velocity/damp
 	
-	velocity.z = velocity.z/damp
-	body.linear_velocity.z = body.linear_velocity.z/damp
-	velocity.x = velocity.x/damp
-	body.linear_velocity.x = body.linear_velocity.x/damp
+	# velocity.z = velocity.z*damp
+	# body.linear_velocity.z = body.linear_velocity.z*damp
+	# velocity.x = velocity.x*damp
+	# body.linear_velocity.x = body.linear_velocity.x*damp
+	velocity -= velocity*damp
 
 	# print(velocity)
 	# body.add_central_force(velocity)
-	if (left == true || right == true || up == true || down == true) && (body.linear_velocity.x < maxspeed && body.linear_velocity.x > -maxspeed && body.linear_velocity.z < maxspeed && body.linear_velocity.z > -maxspeed):
-		body.linear_velocity = velocity
+	body.linear_velocity = velocity
+	emit_signal("move",velocity)
+	# if (left == true || right == true || up == true || down == true) && (body.linear_velocity.x < maxspeed && body.linear_velocity.x > -maxspeed && body.linear_velocity.z < maxspeed && body.linear_velocity.z > -maxspeed):
+	# 	body.linear_velocity = velocity
+	# 	emit_signal("move",body.linear_velocity)
 	
 
 func _unhandled_key_input(event):

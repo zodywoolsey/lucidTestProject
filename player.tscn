@@ -22,7 +22,9 @@ continuous_cd = true
 contact_monitor = true
 can_sleep = false
 
-[node name="MeshInstance" type="MeshInstance" parent="KinematicBody"]
+[node name="MeshInstance" type="MeshInstance" parent="KinematicBody" groups=[
+"test",
+]]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )

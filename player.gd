@@ -14,11 +14,14 @@ onready var tween = get_node("Tween")
 
 var velocity = Vector3(0,0,0)
 
+onready var meshquerytest = get_node("KinematicBody")
+
 signal move(velocity_vector)
 
 
 func _ready():
-	pass # Replace with function body.
+	print(meshquerytest.get_tree().get_nodes_in_group("test"))
+	print(meshquerytest.get_node('MeshInstance'))
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

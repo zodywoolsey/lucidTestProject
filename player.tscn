@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://player.gd" type="Script" id=1]
 
@@ -13,14 +13,37 @@ albedo_color = Color( 0, 0.321569, 1, 1 )
 margin = 0.001
 points = PoolVector3Array( -0.25, 1, 0.25, 0.25, 1, -0.25, 0.25, 1, 0.25, -0.25, 1, -0.25, -0.25, -1, 0.25, 0.25, -1, -0.25, 0.25, -1, 0.25, -0.25, -1, -0.25, 0.25, 1, 0.25, -0.25, 1, -0.25, 0.25, 1, -0.25, -0.25, 1, 0.25, 0.25, -1, 0.25, -0.25, -1, -0.25, 0.25, -1, -0.25, -0.25, -1, 0.25, 0.25, 1, 0.25, -0.25, -1, 0.25, -0.25, 1, 0.25, 0.25, -1, 0.25, 0.25, 1, -0.25, -0.25, -1, -0.25, -0.25, 1, -0.25, 0.25, -1, -0.25 )
 
+[sub_resource type="CylinderShape" id=4]
+margin = 0.001
+radius = 2.0
+height = 0.5
+
+[sub_resource type="SpatialMaterial" id=6]
+emission_enabled = true
+emission = Color( 1, 0.470588, 0, 1 )
+emission_energy = 1.0
+emission_operator = 0
+emission_on_uv2 = false
+
+[sub_resource type="CylinderMesh" id=5]
+material = SubResource( 6 )
+top_radius = 2.0
+bottom_radius = 2.0
+height = 0.5
+radial_segments = 8
+rings = 1
+
 [node name="player" type="Spatial"]
 script = ExtResource( 1 )
 
-[node name="KinematicBody" type="RigidBody" parent="."]
-mode = 2
-continuous_cd = true
-contact_monitor = true
-can_sleep = false
+[node name="Tween" type="Tween" parent="."]
+
+[node name="KinematicBody" type="KinematicBody" parent="." groups=[
+"mainbody",
+"player",
+]]
+collision_layer = 2
+collision_mask = 2
 
 [node name="MeshInstance" type="MeshInstance" parent="KinematicBody" groups=[
 "test",
@@ -37,6 +60,21 @@ shape = SubResource( 3 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
 
 [node name="Camera" type="Camera" parent="KinematicBody/camspatial"]
-transform = Transform( 1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 18, 18 )
+transform = Transform( 1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 12, 0 )
 
-[node name="Tween" type="Tween" parent="."]
+[node name="attackring" type="Area" parent="KinematicBody"]
+
+[node name="CollisionShape" type="CollisionShape" parent="KinematicBody/attackring"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+shape = SubResource( 4 )
+disabled = true
+
+[node name="MeshInstance" type="MeshInstance" parent="KinematicBody/attackring"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+visible = false
+mesh = SubResource( 5 )
+material/0 = null
+
+[node name="Timer" type="Timer" parent="KinematicBody/attackring"]
+wait_time = 0.1
+[connection signal="timeout" from="KinematicBody/attackring/Timer" to="." method="_on_Timer_timeout"]

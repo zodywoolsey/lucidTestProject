@@ -6,8 +6,8 @@ var left 	= false
 var right 	= false
 
 var damp = 0.1
-var speed = 4
-var maxspeed = 30
+var speed = 2
+var maxspeed = 5
 
 onready var body = get_node("KinematicBody")
 onready var tween = get_node("Tween")
@@ -15,6 +15,11 @@ onready var tween = get_node("Tween")
 var velocity = Vector3(0,0,0)
 
 onready var meshquerytest = get_node("KinematicBody")
+
+onready var attackarea = get_node("KinematicBody/attackring")
+onready var attackmesh = attackarea.get_node('MeshInstance')
+onready var attacktimer = attackarea.get_node('Timer')
+onready var attackcollision = attackarea.get_node('CollisionShape')
 
 signal move(velocity_vector)
 
@@ -26,7 +31,7 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	body.linear_damp = damp
+	# body.linear_damp = damp
 	# velocity = body.linear_velocity
 
 	if up == true && velocity.z > -maxspeed:
@@ -55,7 +60,7 @@ func _process(delta):
 
 	# print(velocity)
 	# body.add_central_force(velocity)
-	body.linear_velocity = velocity
+	body.move_and_slide( velocity )
 	emit_signal("move",velocity)
 	# if (left == true || right == true || up == true || down == true) && (body.linear_velocity.x < maxspeed && body.linear_velocity.x > -maxspeed && body.linear_velocity.z < maxspeed && body.linear_velocity.z > -maxspeed):
 	# 	body.linear_velocity = velocity
@@ -82,6 +87,18 @@ func _unhandled_key_input(event):
 		left = false
 	if event.is_action_released("ui_down"):
 		down = false
-
+	
+	if Input.is_action_just_pressed('ui_accept'):
+		print('attack')
+		attack()
 func tween_move_to(pos):
 	tween.interpolate_property(body,"transform:origin",body.transform.origin,pos,0.05,Tween.TRANS_LINEAR)
+
+func attack():
+	attackmesh.show()
+	attackcollision.disabled = false
+	attacktimer.start(.1)
+
+func _on_Timer_timeout():
+	attackmesh.hide()
+	attackcollision.disabled = true

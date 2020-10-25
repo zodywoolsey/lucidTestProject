@@ -15,10 +15,10 @@ func _ready():
 	get_tree().connect("server_disconnected",self,"_disconnected_from_server")
 	hostlabel = get_node("gui/hostip")
 	connecttext = get_node("gui/inip")
-	get_node("gui/connect").connect("pressed",self,"_connect")
-	get_node("gui/host").connect("pressed",self,"_host")
-	get_node("gui/force_sync_players").connect("pressed",self,"_force_sync_players")
-	get_node("Spatial/player").connect("move",self,"local_player_moved")
+	# get_node("gui/connect").connect("pressed",self,"_connect")
+	# get_node("gui/host").connect("pressed",self,"_host")
+	# get_node("gui/force_sync_players").connect("pressed",self,"_force_sync_players")
+	# get_node("Spatial/player").connect("move",self,"local_player_moved")
 
 func _process(delta):
 	# if connected == true:
